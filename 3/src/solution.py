@@ -4,7 +4,6 @@ from sqlalchemy.orm import sessionmaker
 import os
 from dotenv import load_dotenv
 
-
 load_dotenv()
 engine = create_engine(os.environ["DATABASE_URL"])
 
@@ -26,5 +25,18 @@ Base.metadata.create_all(engine)
 
 
 # BEGIN (write your solution here)
+def add_books(engine):
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    try:
+        book1 = Book(title="To Kill a Mockingbird", author="Harper Lee", published_year=1960)
+        book2 = Book(title="1984", author="George Orwell", published_year=1949)
 
-# END
+        session.add_all([book1, book2])
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        print(f"Error occurred: {e}")
+    finally:
+        session.close()
+    # END
